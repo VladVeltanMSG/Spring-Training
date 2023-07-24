@@ -22,7 +22,7 @@ public class ProductService {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
-    public ProductAndCategoryDto createProductAndCategoryDto(ProductAndCategoryDto productAndCategoryDto) {
+    public ProductAndCategoryDto createProductAndCategory(ProductAndCategoryDto productAndCategoryDto) {
         String productName = productAndCategoryDto.getProductName();
 
         Product existingProduct = productRepository.findByName(productName);

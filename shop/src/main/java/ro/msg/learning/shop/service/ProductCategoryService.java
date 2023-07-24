@@ -14,6 +14,8 @@ import java.util.UUID;
 @Service
 public class ProductCategoryService {
 
+    public static final String PRODUCT_CATEGORY_WITH_ID = "Product category with ID ";
+    public static final String NOT_FOUND = " not found.";
     @Autowired
     private ProductCategoryMapper productCategoryMapper;
     @Autowired
@@ -37,7 +39,7 @@ public class ProductCategoryService {
 
     public ProductCategory updateProductCategory(UUID id, String name, String description) {
         ProductCategory existingProductCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product category with ID '" + id + "' not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_CATEGORY_WITH_ID + "'" + id + "'" + NOT_FOUND));
 
         existingProductCategory.setName(name);
         existingProductCategory.setDescription(description);
@@ -51,7 +53,7 @@ public class ProductCategoryService {
 
     public ProductCategory findProductCategoryById(UUID id) {
         return productCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product category with ID '" + id + "' not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_CATEGORY_WITH_ID + "'" + id + "'" + NOT_FOUND));
     }
 
     public ProductCategory findByName(String name) {

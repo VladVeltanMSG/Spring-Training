@@ -24,9 +24,9 @@ public class ProductController {
     private ProductMapper productMapper;
 
     @PostMapping
-    public ResponseEntity<ProductAndCategoryDto> createProductAndCategoryDto(@RequestBody ProductAndCategoryDto productAndCategoryDto) {
+    public ResponseEntity<ProductAndCategoryDto> createProductAndCategory(@RequestBody ProductAndCategoryDto productAndCategoryDto) {
         try {
-            ProductAndCategoryDto createdProduct = productService.createProductAndCategoryDto(productAndCategoryDto);
+            ProductAndCategoryDto createdProduct = productService.createProductAndCategory(productAndCategoryDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
         } catch (DuplicateResourceException e) {
             return ResponseEntity.badRequest().build();

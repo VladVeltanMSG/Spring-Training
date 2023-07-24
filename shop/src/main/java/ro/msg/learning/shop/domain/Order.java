@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -16,7 +18,7 @@ public class Order extends BaseEntity {
     private Customer customer;
 
     @Column(name="created_at")
-    private java.sql.Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name="address_country")
     private String addressCountry;
