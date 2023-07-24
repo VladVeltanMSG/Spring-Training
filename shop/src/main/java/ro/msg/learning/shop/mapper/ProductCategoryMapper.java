@@ -9,13 +9,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductCategoryMapper {
-    public ProductCategoryDto toDto(ProductCategory productCategory)
-    {
-        return new ProductCategoryDto(productCategory.getId(),productCategory.getName(),productCategory.getDescription());
+    public ProductCategoryDto toDto(ProductCategory productCategory) {
+        return ProductCategoryDto.builder()
+                .id(productCategory.getId())
+                .name(productCategory.getName())
+                .description(productCategory.getDescription())
+                .build();
     }
-    public ProductCategory toEntity(ProductCategoryDto productCategoryDto)
-    {
-        return new ProductCategory(productCategoryDto.getName(), productCategoryDto.getDescription());
+
+    public ProductCategory toEntity(ProductCategoryDto productCategoryDto) {
+        return ProductCategory.builder()
+                .name(productCategoryDto.getName())
+                .description(productCategoryDto.getDescription())
+                .build();
     }
     public List<ProductCategoryDto> toDtoList(List<ProductCategory> productCategories) {
         return productCategories.stream()

@@ -16,11 +16,8 @@ import ro.msg.learning.shop.mapper.StockMapper;
 import ro.msg.learning.shop.repository.LocationRepository;
 import ro.msg.learning.shop.repository.ProductRepository;
 import ro.msg.learning.shop.repository.StockRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class StockService {
@@ -28,6 +25,9 @@ public class StockService {
     public static final String NOT_FOUND = "' not found.";
     public static final String PRODUCT_WITH_ID = "Product with ID '";
     public static final String LOCATION_WITH_ID = "Location with ID '";
+    public static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with ID:";
+    public static final String PRODUCT_WITH_ID1 = "Stock not found for product with ID: ";
+    public static final String INSUFFICIENT_STOCK = "Insufficient stock";
     @Autowired
     private StockRepository stockRepository;
     @Autowired
@@ -103,8 +103,7 @@ public class StockService {
         for (ProductIdAndQuantityDto dto : productList) {
             Product product = productRepository.getProductById(dto.getProductId());
             if (product == null) {
-                // Handle the case when the product does not exist
-                throw new ResourceNotFoundException("Product not found with ID: " + dto.getProductId());
+                throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID  + dto.getProductId());
             }
 
             Stock stock = stockRepository.findByLocationAndProduct(location, product);
@@ -116,23 +115,6 @@ public class StockService {
 
         return true;
     }
-    public List<Location> getLocationsWithSufficientStock(List<ProductIdAndQuantityDto> productIdAndQuantityDtoList) {
-
-        List<Location> locationsWithSufficientStock = new ArrayList<>();
-        for(Stock stock:stockRepository.findAll())
-        {
-            if(hasSufficientStock(stock.getLocation(), productIdAndQuantityDtoList)) {
-                locationsWithSufficientStock.add(stock.getLocation());
-            }
-        }
-
-        return locationsWithSufficientStock;
-    }
-    private List<UUID> getProductIdsFromProductList(List<ProductIdAndQuantityDto> productList) {
-        return productList.stream()
-                .map(ProductIdAndQuantityDto::getProductId)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public void updateStockQuantities(Location location, List<ProductIdAndQuantityDto> productList) {
@@ -141,13 +123,13 @@ public class StockService {
             Stock stock = stockRepository.findByLocationAndProduct(location, productRepository.getProductById(productDto.getProductId()));
 
             if (stock == null) {
-                throw new ResourceNotFoundException("Stock not found for product with ID: " + productDto.getProductId());
+                throw new ResourceNotFoundException(PRODUCT_WITH_ID1 + productDto.getProductId());
             }
 
             int newQuantity = stock.getQuantity() - productDto.getQuantity();
             if(newQuantity<0)
             {
-                throw new StockUpdateException("Insufficient stock");
+                throw new StockUpdateException(INSUFFICIENT_STOCK);
             }
             stock.setQuantity(newQuantity);
         }

@@ -26,12 +26,7 @@ public class ProductCategoryController {
 
     @PostMapping
     public ResponseEntity<ProductCategoryDto> createProductCategory(@RequestBody @NonNull ProductCategoryDto body) {
-        ProductCategoryDto productCategoryDto = productCategoryService.createProductCategoryDto(body.getName(), body.getDescription());
-
-        if (productCategoryDto == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
+        ProductCategoryDto productCategoryDto = productCategoryService.createProductCategory(body.getName(), body.getDescription());
         return new ResponseEntity<>(productCategoryDto, HttpStatus.CREATED);
     }
 
@@ -43,8 +38,7 @@ public class ProductCategoryController {
 
     @GetMapping
     public ResponseEntity<List<ProductCategoryDto>> getAllProductCategories() {
-        List<ProductCategory> productCategories = productCategoryService.getAllProductCategories();
-        List<ProductCategoryDto> productCategoryDtos = productCategoryMapper.toDtoList(productCategories);
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.getAllProductCategories();
         return ResponseEntity.ok(productCategoryDtos);
     }
 
@@ -57,8 +51,8 @@ public class ProductCategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductCategoryDto> updateProductCategory(@PathVariable UUID id, @RequestBody ProductCategoryDto productCategoryDto) {
         try {
-            ProductCategory updatedProductCategory = productCategoryService.updateProductCategory(id, productCategoryDto.getName(), productCategoryDto.getDescription());
-            return ResponseEntity.ok(productCategoryMapper.toDto(updatedProductCategory));
+            ProductCategoryDto updatedProductCategoryDto = productCategoryService.updateProductCategory(id, productCategoryDto.getName(), productCategoryDto.getDescription());
+            return ResponseEntity.ok(updatedProductCategoryDto);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

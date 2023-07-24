@@ -1,11 +1,9 @@
 package ro.msg.learning.shop.strategy;
 
-import ro.msg.learning.shop.domain.Location;
-import ro.msg.learning.shop.domain.Product;
-
-import java.util.List;
+import ro.msg.learning.shop.domain.Order;
+import ro.msg.learning.shop.dto.OrderCreateDto;
 
 public interface LocationSelectionStrategy {
-    List<Location> selectLocations(List<Product> products);
+    Order selectLocations(OrderCreateDto orderCreateDto);
 }
 

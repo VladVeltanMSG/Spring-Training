@@ -14,8 +14,9 @@ import java.util.UUID;
 @Service
 public class CustomerService {
 
-    public static final String CUSTOMER_WITH_ID = "Customer with ID";
+    public static final String CUSTOMER_WITH_ID = "Customer with ID'";
     public static final String NOT_FOUND = "' not found.";
+    public static final String CUSTOMER_NOT_FOUND = "Customer not found";
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -28,6 +29,10 @@ public class CustomerService {
 
     public CustomerDto getCustomerById(UUID id) {
         Customer customer = customerRepository.findById(id).orElse(null);
+        if(customer==null)
+        {
+            throw new ResourceNotFoundException(CUSTOMER_NOT_FOUND);
+        }
         return customerMapper.toDto(customer);
     }
 
@@ -41,7 +46,7 @@ public class CustomerService {
         Customer existingCustomer = customerRepository.findById(id).orElse(null);
 
         if (existingCustomer == null) {
-            throw new ResourceNotFoundException(CUSTOMER_WITH_ID + " '" + id + NOT_FOUND);
+            throw new ResourceNotFoundException(CUSTOMER_WITH_ID + id + NOT_FOUND);
         }
 
         customerMapper.updateCustomerFromDto(customerDto, existingCustomer);

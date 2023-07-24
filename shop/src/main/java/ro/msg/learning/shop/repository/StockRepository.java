@@ -20,10 +20,15 @@ public interface StockRepository extends JpaRepository<Stock, StockId> {
             " GROUP BY location" +
             " HAVING COUNT(DISTINCT product) =:productsCount")
     List<Location> findLocationsByProducts(@Param("products") List<Product> products, @Param("productsCount") Integer productsCount);
-    @Query("SELECT s.location, s.product, MAX(s.quantity) as quantity " +
+
+    @Query("SELECT s.location, s.product, s.quantity " +
             "FROM Stock s " +
-            "WHERE s.product IN :products " +
-            "GROUP BY s.location, s.product")
+            "WHERE s.product IN :products AND (s.product, s.quantity) IN (" +
+            "   SELECT s2.product, MAX(s2.quantity) " +
+            "   FROM Stock s2 " +
+            "   WHERE s2.product IN :products " +
+            "   GROUP BY s2.product" +
+            ")")
     List<Object[]> findLocationsMostAbundant(@Param("products") List<Product> products);
 
 

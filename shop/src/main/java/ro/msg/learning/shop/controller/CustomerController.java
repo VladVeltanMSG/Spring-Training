@@ -26,9 +26,6 @@ public class CustomerController {
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID id) {
         CustomerDto customer = customerService.getCustomerById(id);
-        if (customer == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(customer);
     }
 

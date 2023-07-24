@@ -6,6 +6,7 @@ import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductAndCategoryDto;
 import ro.msg.learning.shop.exception.DuplicateResourceException;
+import ro.msg.learning.shop.exception.ResourceNotFoundException;
 import ro.msg.learning.shop.mapper.ProductMapper;
 import ro.msg.learning.shop.repository.ProductCategoryRepository;
 import ro.msg.learning.shop.repository.ProductRepository;
@@ -15,6 +16,9 @@ import java.util.UUID;
 
 @Service
 public class ProductService {
+    public static final String PRODUCT_WITH_NAME = "Product with name ";
+    public static final String ALREADY_EXISTS = " already exists.";
+    public static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with ID: ";
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -27,7 +31,7 @@ public class ProductService {
 
         Product existingProduct = productRepository.findByName(productName);
         if (existingProduct != null) {
-            throw new DuplicateResourceException("Product with name " + productName + " already exists.");
+            throw new DuplicateResourceException(PRODUCT_WITH_NAME + productName + ALREADY_EXISTS);
         }
 
         Product product = productMapper.toEntity(productAndCategoryDto);
@@ -64,7 +68,7 @@ public class ProductService {
         if (product != null) {
             productDto = productMapper.toDto(product);
         } else {
-            productDto = null;
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id);
         }
         return productDto;
     }
@@ -80,7 +84,7 @@ public class ProductService {
     public ProductAndCategoryDto updateProductById(UUID id, ProductAndCategoryDto productAndCategoryDto) {
         Product product = getProductById(id);
         if (product == null) {
-            return null;
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id);
         }
 
         ProductCategory productCategory = getOrCreateProductCategory(productAndCategoryDto);

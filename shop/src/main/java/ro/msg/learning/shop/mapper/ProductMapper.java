@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductAndCategoryDto;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,12 +11,35 @@ import java.util.stream.Collectors;
 public class ProductMapper {
     public ProductAndCategoryDto toDto(Product product)
     {
-        return new ProductAndCategoryDto(product.getId(),product.getName(),product.getDescription(),product.getPrice(),product.getWeight(),product.getSupplier(),product.getImageUrl(),product.getCategory().getId(),product.getCategory().getName(),product.getCategory().getDescription());
+        return ProductAndCategoryDto.builder()
+                .productId(product.getId())
+                .productName(product.getName())
+                .productDescription(product.getDescription())
+                .price(product.getPrice())
+                .weight(product.getWeight())
+                .supplier(product.getSupplier())
+                .imageUrl(product.getImageUrl())
+                .categoryId(product.getCategory().getId())
+                .productCategoryName(product.getCategory().getName())
+                .productCategoryDescription(product.getCategory().getDescription())
+                .build();
     }
     public Product toEntity(ProductAndCategoryDto productAndCategoryDto)
     {
-        ProductCategory productCategory=new ProductCategory(productAndCategoryDto.getProductCategoryName(), productAndCategoryDto.getProductDescription());
-        return new Product(productAndCategoryDto.getProductName(),productAndCategoryDto.getProductCategoryDescription(),productAndCategoryDto.getPrice(),productAndCategoryDto.getWeight(),productCategory,productAndCategoryDto.getSupplier(),productAndCategoryDto.getImageUrl());
+        ProductCategory productCategory = ProductCategory.builder()
+                .name(productAndCategoryDto.getProductCategoryName())
+                .description(productAndCategoryDto.getProductCategoryDescription())
+                .build();
+
+        return Product.builder()
+                .name(productAndCategoryDto.getProductName())
+                .description(productAndCategoryDto.getProductDescription())
+                .price(productAndCategoryDto.getPrice())
+                .weight(productAndCategoryDto.getWeight())
+                .category(productCategory)
+                .supplier(productAndCategoryDto.getSupplier())
+                .imageUrl(productAndCategoryDto.getImageUrl())
+                .build();
     }
     public List<ProductAndCategoryDto> toDtoList(List<Product> products) {
         return products.stream().map(this::toDto).collect(Collectors.toList());
