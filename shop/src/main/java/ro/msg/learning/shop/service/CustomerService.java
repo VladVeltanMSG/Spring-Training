@@ -9,6 +9,7 @@ import ro.msg.learning.shop.mapper.CustomerMapper;
 import ro.msg.learning.shop.repository.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,8 +30,7 @@ public class CustomerService {
 
     public CustomerDto getCustomerById(UUID id) {
         Customer customer = customerRepository.findById(id).orElse(null);
-        if(customer==null)
-        {
+        if (customer == null) {
             throw new ResourceNotFoundException(CUSTOMER_NOT_FOUND);
         }
         return customerMapper.toDto(customer);
@@ -56,5 +56,9 @@ public class CustomerService {
 
     public void deleteCustomer(UUID id) {
         customerRepository.deleteById(id);
+    }
+
+    public Optional<Customer> findById(UUID idCustomer) {
+        return customerRepository.findById(idCustomer);
     }
 }

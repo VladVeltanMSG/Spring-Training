@@ -1,9 +1,7 @@
 package ro.msg.learning.shop.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,23 +10,25 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Table(name = "orderr") // "order" is a reserved keyword, so we use "orderr" as the table name
+@Builder
+@AllArgsConstructor
 public class Order extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "customer")
     private Customer customer;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="address_country")
+    @Column(name = "address_country")
     private String addressCountry;
 
-    @Column(name="address_city")
+    @Column(name = "address_city")
     private String addressCity;
 
-    @Column(name="address_county")
+    @Column(name = "address_county")
     private String addressCounty;
 
-    @Column(name="address_street")
+    @Column(name = "address_street")
     private String addressStreet;
 }

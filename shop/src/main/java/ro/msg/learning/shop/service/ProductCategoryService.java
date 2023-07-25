@@ -1,8 +1,6 @@
 package ro.msg.learning.shop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductCategoryDto;
@@ -39,9 +37,7 @@ public class ProductCategoryService {
     }
 
     public ProductCategoryDto updateProductCategory(UUID id, String name, String description) {
-        ProductCategory existingProductCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_CATEGORY_WITH_ID + id + NOT_FOUND));
-
+        ProductCategory existingProductCategory = findById(id);
         existingProductCategory.setName(name);
         existingProductCategory.setDescription(description);
         productCategoryRepository.save(existingProductCategory);
@@ -53,9 +49,9 @@ public class ProductCategoryService {
         return productCategoryMapper.toDtoList(productCategories);
     }
 
-    public ProductCategory findProductCategoryById(UUID id) {
+    public ProductCategory findById(UUID id) {
         return productCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_CATEGORY_WITH_ID  + id + NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_CATEGORY_WITH_ID + id + NOT_FOUND));
     }
 
     private boolean categoryExists(String name) {

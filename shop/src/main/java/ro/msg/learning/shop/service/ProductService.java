@@ -12,6 +12,7 @@ import ro.msg.learning.shop.repository.ProductCategoryRepository;
 import ro.msg.learning.shop.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,14 +30,11 @@ public class ProductService {
     public ProductAndCategoryDto createProductAndCategory(ProductAndCategoryDto productAndCategoryDto) {
         String productName = productAndCategoryDto.getProductName();
 
-        Product existingProduct = productRepository.findByName(productName);
-        if (existingProduct != null) {
+        if (productRepository.existsByName(productName)) {
             throw new DuplicateResourceException(PRODUCT_WITH_NAME + productName + ALREADY_EXISTS);
         }
 
         Product product = productMapper.toEntity(productAndCategoryDto);
-        ProductCategory productCategory = getOrCreateProductCategory(productAndCategoryDto);
-        product.setCategory(productCategory);
 
         productRepository.save(product);
 
@@ -64,13 +62,11 @@ public class ProductService {
 
     public ProductAndCategoryDto getProductDtoById(UUID id) {
         Product product = getProductById(id);
-        ProductAndCategoryDto productDto;
         if (product != null) {
-            productDto = productMapper.toDto(product);
+            return productMapper.toDto(product);
         } else {
             throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id);
         }
-        return productDto;
     }
 
     public boolean deleteProductById(UUID id) {
@@ -104,6 +100,14 @@ public class ProductService {
 
     public Product getProductById(UUID id) {
         return productRepository.findById(id).orElse(null);
+    }
+
+    public Optional<Product> findById(UUID productId) {
+        return productRepository.findById(productId);
+    }
+
+    public boolean existsById(UUID productId) {
+        return productRepository.existsById(productId);
     }
 }
 

@@ -4,13 +4,13 @@ import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductAndCategoryDto;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
-    public ProductAndCategoryDto toDto(Product product)
-    {
+    public ProductAndCategoryDto toDto(Product product) {
         return ProductAndCategoryDto.builder()
                 .productId(product.getId())
                 .productName(product.getName())
@@ -24,8 +24,8 @@ public class ProductMapper {
                 .productCategoryDescription(product.getCategory().getDescription())
                 .build();
     }
-    public Product toEntity(ProductAndCategoryDto productAndCategoryDto)
-    {
+
+    public Product toEntity(ProductAndCategoryDto productAndCategoryDto) {
         ProductCategory productCategory = ProductCategory.builder()
                 .name(productAndCategoryDto.getProductCategoryName())
                 .description(productAndCategoryDto.getProductCategoryDescription())
@@ -41,6 +41,7 @@ public class ProductMapper {
                 .imageUrl(productAndCategoryDto.getImageUrl())
                 .build();
     }
+
     public List<ProductAndCategoryDto> toDtoList(List<Product> products) {
         return products.stream().map(this::toDto).collect(Collectors.toList());
     }

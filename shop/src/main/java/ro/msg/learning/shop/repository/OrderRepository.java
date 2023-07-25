@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ro.msg.learning.shop.domain.Order;
 
 import java.util.UUID;
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 }

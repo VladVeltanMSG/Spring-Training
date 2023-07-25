@@ -3,7 +3,6 @@ package ro.msg.learning.shop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dto.LocationDto;
 import ro.msg.learning.shop.service.LocationService;
@@ -11,7 +10,6 @@ import ro.msg.learning.shop.service.LocationService;
 import java.util.List;
 import java.util.UUID;
 
-@Validated
 @RestController
 @RequestMapping("/location")
 public class LocationController {

@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @Entity
 @Builder
-@Table(name="product_category")
+@Table(name = "product_category")
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductCategory extends BaseEntity {

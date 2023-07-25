@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 import ro.msg.learning.shop.domain.Product;
 
 import java.util.UUID;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     Product findByName(String productName);
 
     Product getProductById(UUID productId);
+
+    boolean existsByName(String productName);
 }

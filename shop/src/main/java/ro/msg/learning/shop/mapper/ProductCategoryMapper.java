@@ -17,12 +17,6 @@ public class ProductCategoryMapper {
                 .build();
     }
 
-    public ProductCategory toEntity(ProductCategoryDto productCategoryDto) {
-        return ProductCategory.builder()
-                .name(productCategoryDto.getName())
-                .description(productCategoryDto.getDescription())
-                .build();
-    }
     public List<ProductCategoryDto> toDtoList(List<ProductCategory> productCategories) {
         return productCategories.stream()
                 .map(this::toDto)

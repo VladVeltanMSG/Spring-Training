@@ -1,9 +1,8 @@
 package ro.msg.learning.shop.mapper;
 
 import org.springframework.stereotype.Component;
-import ro.msg.learning.shop.dto.CustomerDto;
 import ro.msg.learning.shop.domain.Customer;
-
+import ro.msg.learning.shop.dto.CustomerDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

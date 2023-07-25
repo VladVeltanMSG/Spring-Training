@@ -10,6 +10,7 @@ import ro.msg.learning.shop.mapper.LocationMapper;
 import ro.msg.learning.shop.repository.LocationRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,8 +41,8 @@ public class LocationService {
         if (existingLocation != null) {
             throw new DuplicateResourceException(LOCATION_WITH_NAME + locationDto.getName() + ALREADY_EXISTS);
         }
-
-        Location location = locationMapper.toEntity(locationDto);
+        Location location = new Location();
+        locationMapper.toEntity(locationDto, location);
         location = locationRepository.save(location);
         return locationMapper.toDto(location);
     }
@@ -50,8 +51,8 @@ public class LocationService {
         Location existingLocation = locationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(LOCATION_WITH_ID + id + NOT_FOUND));
 
-        locationMapper.updateLocationFromDto(locationDto,existingLocation);
-        Location updatedLocation=locationRepository.save(existingLocation);
+        locationMapper.toEntity(locationDto, existingLocation);
+        Location updatedLocation = locationRepository.save(existingLocation);
         return locationMapper.toDto(updatedLocation);
     }
 
@@ -60,5 +61,13 @@ public class LocationService {
             throw new ResourceNotFoundException(LOCATION_WITH_ID + id + NOT_FOUND);
         }
         locationRepository.deleteById(id);
+    }
+
+    public Optional<Location> findById(UUID locationId) {
+        return locationRepository.findById(locationId);
+    }
+
+    public boolean existsById(UUID locationId) {
+        return locationRepository.existsById(locationId);
     }
 }

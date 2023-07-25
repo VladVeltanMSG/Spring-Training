@@ -4,8 +4,7 @@ import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.domain.Location;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.Stock;
-import ro.msg.learning.shop.dto.StockCreateDto;
-import ro.msg.learning.shop.dto.StockGetDto;
+import ro.msg.learning.shop.dto.StockDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,25 +12,25 @@ import java.util.stream.Collectors;
 @Component
 public class StockMapper {
 
-    public Stock mapStockCreateDtoToStock(StockCreateDto stockCreateDto, Product product, Location location) {
+    public Stock toStock(StockDto stockDto, Product product, Location location) {
         Stock stock = new Stock();
         stock.setProduct(product);
         stock.setLocation(location);
-        stock.setQuantity(stockCreateDto.getQuantity());
+        stock.setQuantity(stockDto.getQuantity());
         return stock;
     }
 
-    public StockGetDto mapStockToStockGetDto(Stock stock) {
-        StockGetDto stockGetDto = new StockGetDto();
-        stockGetDto.setProduct(stock.getProduct());
-        stockGetDto.setLocation(stock.getLocation());
-        stockGetDto.setQuantity(stock.getQuantity());
-        return stockGetDto;
+    public StockDto toDto(Stock stock) {
+        StockDto stockDto = new StockDto();
+        stockDto.setProductId(stock.getProduct().getId());
+        stockDto.setLocationId(stock.getLocation().getId());
+        stockDto.setQuantity(stock.getQuantity());
+        return stockDto;
     }
 
-    public List<StockGetDto> mapStocksToStockGetDtos(List<Stock> stocks) {
+    public List<StockDto> mapStocksToStockGetDtos(List<Stock> stocks) {
         return stocks.stream()
-                .map(this::mapStockToStockGetDto)
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 }

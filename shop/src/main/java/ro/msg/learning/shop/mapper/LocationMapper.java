@@ -9,14 +9,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class LocationMapper {
-    public Location toEntity(LocationDto locationDto) {
-        Location location = new Location();
+    public void toEntity(LocationDto locationDto, Location location) {
         location.setName(locationDto.getName());
         location.setCountry(locationDto.getCountry());
         location.setCity(locationDto.getCity());
         location.setCounty(locationDto.getCounty());
         location.setStreetAddress(locationDto.getStreetAddress());
-        return location;
     }
 
     public LocationDto toDto(Location location) {
@@ -35,14 +33,6 @@ public class LocationMapper {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
-    public void updateLocationFromDto(LocationDto locationDto,Location location){
-        location.setName(locationDto.getName());
-        location.setCity(locationDto.getCity());
-        location.setCounty(locationDto.getCounty());
-        location.setCountry(locationDto.getCountry());
-        location.setStreetAddress(locationDto.getStreetAddress());
 
-
-    }
 
 }

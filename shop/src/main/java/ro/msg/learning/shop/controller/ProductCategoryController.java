@@ -4,7 +4,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductCategoryDto;
@@ -15,7 +14,6 @@ import ro.msg.learning.shop.service.ProductCategoryService;
 import java.util.List;
 import java.util.UUID;
 
-@Validated
 @RequestMapping("/productCategory")
 @RestController
 public class ProductCategoryController {
@@ -32,7 +30,7 @@ public class ProductCategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductCategoryDto> getProductCategoryById(@PathVariable UUID id) {
-        ProductCategory productCategory = productCategoryService.findProductCategoryById(id);
+        ProductCategory productCategory = productCategoryService.findById(id);
         return new ResponseEntity<>(productCategoryMapper.toDto(productCategory), HttpStatus.OK);
     }
 
