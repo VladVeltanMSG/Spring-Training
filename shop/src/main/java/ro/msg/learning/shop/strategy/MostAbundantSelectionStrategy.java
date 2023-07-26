@@ -15,6 +15,7 @@ import ro.msg.learning.shop.service.StockService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static ro.msg.learning.shop.service.OrderService.CUSTOMER_NOT_FOUND;
 import static ro.msg.learning.shop.service.StockService.PRODUCT_NOT_FOUND_WITH_ID;
@@ -34,7 +35,7 @@ public class MostAbundantSelectionStrategy implements LocationSelectionStrategy 
     private OrderMapper orderMapper;
 
     @Override
-    public Order selectLocations(OrderCreateDto orderCreateDto) {
+    public Order createOrder(OrderCreateDto orderCreateDto) {
         List<Object[]> locationsMostAbundant = stockService.findLocationsMostAbundant(convertToProductList(orderCreateDto));
 
         for (Object[] obj : locationsMostAbundant) {
@@ -61,7 +62,7 @@ public class MostAbundantSelectionStrategy implements LocationSelectionStrategy 
 
     public int findQuantityOfGivenProductInProductIdAndQuantityList(Product product, List<ProductIdAndQuantityDto> productIdAndQuantityDtoList) {
         for (ProductIdAndQuantityDto productIdAndQuantityDto : productIdAndQuantityDtoList) {
-            if (product.getId() == productIdAndQuantityDto.getProductId()) {
+            if (product.getId().equals(productIdAndQuantityDto.getProductId())) {
                 return productIdAndQuantityDto.getQuantity();
             }
         }
@@ -71,14 +72,14 @@ public class MostAbundantSelectionStrategy implements LocationSelectionStrategy 
 
     public List<Product> convertToProductList(OrderCreateDto orderCreateDto) {
         List<ProductIdAndQuantityDto> productIdAndQuantityList = orderCreateDto.getProductList();
-        List<Product> productList = new ArrayList<>();
 
+        List<Product> productList = new ArrayList<>();
         for (ProductIdAndQuantityDto productIdAndQuantityDto : productIdAndQuantityList) {
-            Product product = productService.getProductById(productIdAndQuantityDto.getProductId());
-            if (product == null) {
+            Optional<Product> product = productService.findById(productIdAndQuantityDto.getProductId());
+            if (product.isEmpty()) {
                 throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productIdAndQuantityDto.getProductId());
             }
-            productList.add(product);
+            productList.add(product.get());
         }
         return productList;
     }

@@ -20,7 +20,7 @@ public class OrderService {
     private OrderMapper orderMapper;
 
     public OrderDto createOrder(OrderCreateDto orderCreateDto) {
-        orderRepository.save(locationSelectionStrategy.selectLocations(orderCreateDto));
-        return orderMapper.toDto(locationSelectionStrategy.selectLocations(orderCreateDto));
+        orderRepository.save(locationSelectionStrategy.createOrder(orderCreateDto));
+        return orderMapper.toDto(locationSelectionStrategy.createOrder(orderCreateDto));
     }
 }

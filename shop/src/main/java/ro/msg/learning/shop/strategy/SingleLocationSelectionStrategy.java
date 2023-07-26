@@ -13,13 +13,12 @@ import ro.msg.learning.shop.service.CustomerService;
 import ro.msg.learning.shop.service.ProductService;
 import ro.msg.learning.shop.service.StockService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ro.msg.learning.shop.service.OrderService.CUSTOMER_NOT_FOUND;
 import static ro.msg.learning.shop.service.OrderService.NO_LOCATION_WITH_SUFFICIENT_STOCK_FOUND;
-import static ro.msg.learning.shop.service.StockService.PRODUCT_NOT_FOUND_WITH_ID;
-
 
 public class SingleLocationSelectionStrategy implements LocationSelectionStrategy {
 
@@ -33,12 +32,19 @@ public class SingleLocationSelectionStrategy implements LocationSelectionStrateg
     private OrderMapper orderMapper;
 
     @Override
-    public Order selectLocations(OrderCreateDto orderCreateDto) {
+    public Order createOrder(OrderCreateDto orderCreateDto) {
         List<Location> locationsList = stockService.findLocationsByProducts(convertToProductList(orderCreateDto), convertToProductList(orderCreateDto).size());
 
         Customer customer = customerService.findById(orderCreateDto.getIdCustomer()).orElseThrow(() -> new ResourceNotFoundException(CUSTOMER_NOT_FOUND));
+        boolean foundSuitableLocation=false;
 
-        if (!updateFirstLocationFoundWithSufficientStock(locationsList, orderCreateDto.getProductList())) {
+        for (Location location : locationsList) {
+            if (stockService.hasSufficientStock(location, orderCreateDto.getProductList())) {
+                stockService.updateStockQuantities(location, orderCreateDto.getProductList());
+                foundSuitableLocation=true;
+            }
+        }
+        if (!foundSuitableLocation) {
             throw new ResourceNotFoundException(NO_LOCATION_WITH_SUFFICIENT_STOCK_FOUND);
         }
 
@@ -46,30 +52,16 @@ public class SingleLocationSelectionStrategy implements LocationSelectionStrateg
 
     }
 
-    public boolean updateFirstLocationFoundWithSufficientStock(List<Location> locationsList, List<ProductIdAndQuantityDto> productIdAndQuantityDtoList) {
-        boolean ok = false;
-        for (Location location : locationsList) {
-            if (stockService.hasSufficientStock(location, productIdAndQuantityDtoList)) {
-                stockService.updateStockQuantities(location, productIdAndQuantityDtoList);
-                ok = true;
-                break;
-            }
-        }
-        return ok;
-    }
-
     public List<Product> convertToProductList(OrderCreateDto orderCreateDto) {
         List<ProductIdAndQuantityDto> productIdAndQuantityList = orderCreateDto.getProductList();
-        List<Product> productList = new ArrayList<>();
 
-        for (ProductIdAndQuantityDto productIdAndQuantityDto : productIdAndQuantityList) {
-            Product product = productService.getProductById(productIdAndQuantityDto.getProductId());
-            if (product == null) {
-                throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productIdAndQuantityDto.getProductId());
-            }
-            productList.add(product);
-        }
-        return productList;
+        return productIdAndQuantityList.stream()
+                .map(ProductIdAndQuantityDto::getProductId)
+                .map(productService::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
+
 }
 

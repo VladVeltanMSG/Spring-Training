@@ -14,6 +14,7 @@ import ro.msg.learning.shop.mapper.StockMapper;
 import ro.msg.learning.shop.repository.StockRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,8 +24,9 @@ public class StockService {
     public static final String PRODUCT_WITH_ID = "Product with ID '";
     public static final String LOCATION_WITH_ID = "Location with ID '";
     public static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with ID:";
-    public static final String PRODUCT_WITH_ID1 = "Stock not found for product with ID: ";
+    public static final String STOCK_NOT_FOUND_FOR_PRODUCT_WITH_ID = "Stock not found for product with ID: ";
     public static final String INSUFFICIENT_STOCK = "Insufficient stock";
+    public static final String PRODUCT_NOT_FOUND = "Product not found";
     @Autowired
     private StockRepository stockRepository;
     @Autowired
@@ -101,12 +103,12 @@ public class StockService {
 
     public boolean hasSufficientStock(Location location, List<ProductIdAndQuantityDto> productList) {
         for (ProductIdAndQuantityDto dto : productList) {
-            Product product = productService.getProductById(dto.getProductId());
-            if (product == null) {
+            Optional<Product> product = productService.findById(dto.getProductId());
+            if (product.isEmpty()) {
                 throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + dto.getProductId());
             }
 
-            Stock stock = stockRepository.findByLocationAndProduct(location, product);
+            Stock stock = stockRepository.findByLocationAndProduct(location, product.get());
 
             if (stock == null || stock.getQuantity() < dto.getQuantity()) {
                 return false;
@@ -118,11 +120,16 @@ public class StockService {
 
     public void updateStockQuantities(Location location, List<ProductIdAndQuantityDto> productList) {
         for (ProductIdAndQuantityDto productDto : productList) {
+            Optional<Product> product=productService.findById(productDto.getProductId());
+            if(product.isEmpty())
+            {
+                throw new ResourceNotFoundException(PRODUCT_NOT_FOUND);
+            }
 
-            Stock stock = stockRepository.findByLocationAndProduct(location, productService.getProductById(productDto.getProductId()));
+            Stock stock = stockRepository.findByLocationAndProduct(location,product.get());
 
             if (stock == null) {
-                throw new ResourceNotFoundException(PRODUCT_WITH_ID1 + productDto.getProductId());
+                throw new ResourceNotFoundException(STOCK_NOT_FOUND_FOR_PRODUCT_WITH_ID + productDto.getProductId());
             }
 
             int newQuantity = stock.getQuantity() - productDto.getQuantity();

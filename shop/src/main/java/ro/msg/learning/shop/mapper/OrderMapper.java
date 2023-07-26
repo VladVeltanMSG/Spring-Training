@@ -13,7 +13,7 @@ public class OrderMapper {
     public OrderDto toDto(Order order) {
         return OrderDto.builder()
                 .id(order.getId())
-                .customer(order.getCustomer())
+                .customerId(order.getCustomer().getId())
                 .localDateTime(order.getCreatedAt())
                 .country(order.getAddressCountry())
                 .city(order.getAddressCity())

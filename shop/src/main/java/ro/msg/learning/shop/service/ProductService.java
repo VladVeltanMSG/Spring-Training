@@ -61,9 +61,9 @@ public class ProductService {
     }
 
     public ProductAndCategoryDto getProductDtoById(UUID id) {
-        Product product = getProductById(id);
-        if (product != null) {
-            return productMapper.toDto(product);
+        Optional<Product> product = findById(id);
+        if (product.isPresent()) {
+            return productMapper.toDto(product.get());
         } else {
             throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id);
         }
@@ -78,10 +78,7 @@ public class ProductService {
     }
 
     public ProductAndCategoryDto updateProductById(UUID id, ProductAndCategoryDto productAndCategoryDto) {
-        Product product = getProductById(id);
-        if (product == null) {
-            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id);
-        }
+        Product product = findById(id).orElseThrow(()->new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + id));
 
         ProductCategory productCategory = getOrCreateProductCategory(productAndCategoryDto);
 
@@ -96,10 +93,6 @@ public class ProductService {
         productRepository.save(product);
 
         return productMapper.toDto(product);
-    }
-
-    public Product getProductById(UUID id) {
-        return productRepository.findById(id).orElse(null);
     }
 
     public Optional<Product> findById(UUID productId) {

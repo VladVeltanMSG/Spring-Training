@@ -4,6 +4,6 @@ import ro.msg.learning.shop.domain.Order;
 import ro.msg.learning.shop.dto.OrderCreateDto;
 
 public interface LocationSelectionStrategy {
-    Order selectLocations(OrderCreateDto orderCreateDto);
+    Order createOrder(OrderCreateDto orderCreateDto);
 }
 
